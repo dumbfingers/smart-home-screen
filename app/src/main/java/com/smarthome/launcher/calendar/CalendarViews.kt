@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.smarthome.launcher.R
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,13 +56,13 @@ fun CalendarAgendaWidget(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.CalendarToday,
-                        contentDescription = "Calendar",
+                        contentDescription = stringResource(R.string.calendar_title),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "Schedule & Events",
+                        text = stringResource(R.string.calendar_title),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -73,7 +75,7 @@ fun CalendarAgendaWidget(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add Event"
+                        contentDescription = stringResource(R.string.calendar_add_event)
                     )
                 }
             }
@@ -92,13 +94,13 @@ fun CalendarAgendaWidget(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Showing demo events (Tap to grant sync permission)",
+                            text = stringResource(R.string.calendar_demo_banner),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onTertiaryContainer,
                             modifier = Modifier.weight(1f)
                         )
                         TextButton(onClick = onRequestPermission) {
-                            Text("Grant", fontWeight = FontWeight.Bold)
+                            Text(stringResource(R.string.calendar_grant_button), fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -119,7 +121,7 @@ fun CalendarAgendaWidget(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No upcoming events scheduled",
+                        text = stringResource(R.string.calendar_no_events),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -148,6 +150,7 @@ fun CalendarEventItem(
 ) {
     val timeFormat = remember { SimpleDateFormat("h:mm a", Locale.getDefault()) }
     val dateFormat = remember { SimpleDateFormat("EEE, MMM d", Locale.getDefault()) }
+    val allDayLabel = stringResource(R.string.calendar_all_day)
 
     val eventColor = remember(event.color) {
         if (event.color != null && event.color != 0) Color(event.color)
@@ -197,7 +200,7 @@ fun CalendarEventItem(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = if (event.allDay) {
-                            "All Day • ${dateFormat.format(Date(event.startMillis))}"
+                            "$allDayLabel • ${dateFormat.format(Date(event.startMillis))}"
                         } else {
                             "${dateFormat.format(Date(event.startMillis))}  ${timeFormat.format(Date(event.startMillis))} - ${timeFormat.format(Date(event.endMillis))}"
                         },
@@ -269,6 +272,7 @@ fun EventDetailOrEditDialog(
 
     val timeFormat = remember { SimpleDateFormat("h:mm a", Locale.getDefault()) }
     val dateFormat = remember { SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.getDefault()) }
+    val allDayLabel = stringResource(R.string.calendar_all_day)
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
@@ -285,7 +289,7 @@ fun EventDetailOrEditDialog(
             ) {
                 if (isEditingOrCreating) {
                     Text(
-                        text = if (event == null) "Create Calendar Event" else "Edit Event",
+                        text = if (event == null) stringResource(R.string.calendar_create_title) else stringResource(R.string.calendar_edit_title),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -294,7 +298,7 @@ fun EventDetailOrEditDialog(
                     OutlinedTextField(
                         value = title,
                         onValueChange = { title = it },
-                        label = { Text("Event Title") },
+                        label = { Text(stringResource(R.string.calendar_event_title_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -303,7 +307,7 @@ fun EventDetailOrEditDialog(
                     OutlinedTextField(
                         value = location,
                         onValueChange = { location = it },
-                        label = { Text("Location") },
+                        label = { Text(stringResource(R.string.calendar_event_location_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -312,7 +316,7 @@ fun EventDetailOrEditDialog(
                     OutlinedTextField(
                         value = description,
                         onValueChange = { description = it },
-                        label = { Text("Description") },
+                        label = { Text(stringResource(R.string.calendar_event_description_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         maxLines = 3
                     )
@@ -323,7 +327,7 @@ fun EventDetailOrEditDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("All-day event", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.calendar_event_all_day_toggle), style = MaterialTheme.typography.bodyLarge)
                         Switch(
                             checked = isAllDay,
                             onCheckedChange = { isAllDay = it }
@@ -337,7 +341,7 @@ fun EventDetailOrEditDialog(
                         horizontalArrangement = Arrangement.End
                     ) {
                         TextButton(onClick = onDismiss) {
-                            Text("Cancel")
+                            Text(stringResource(R.string.calendar_button_cancel))
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
@@ -356,7 +360,7 @@ fun EventDetailOrEditDialog(
                                 }
                             }
                         ) {
-                            Text("Save & Sync")
+                            Text(stringResource(R.string.calendar_button_save_sync))
                         }
                     }
                 } else if (event != null) {
@@ -368,7 +372,7 @@ fun EventDetailOrEditDialog(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "${dateFormat.format(Date(event.startMillis))}  ${if (event.allDay) "(All day)" else "${timeFormat.format(Date(event.startMillis))} - ${timeFormat.format(Date(event.endMillis))}"}",
+                        text = "${dateFormat.format(Date(event.startMillis))}  ${if (event.allDay) "($allDayLabel)" else "${timeFormat.format(Date(event.startMillis))} - ${timeFormat.format(Date(event.endMillis))}"}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -404,18 +408,18 @@ fun EventDetailOrEditDialog(
                                 contentColor = MaterialTheme.colorScheme.onErrorContainer
                             )
                         ) {
-                            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete")
+                            Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.calendar_button_delete))
                         }
 
                         Row {
                             TextButton(onClick = onDismiss) {
-                                Text("Close")
+                                Text(stringResource(R.string.calendar_button_close))
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             Button(onClick = { onStartEdit(event) }) {
                                 Icon(imageVector = Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(6.dp))
-                                Text("Edit")
+                                Text(stringResource(R.string.calendar_button_edit))
                             }
                         }
                     }

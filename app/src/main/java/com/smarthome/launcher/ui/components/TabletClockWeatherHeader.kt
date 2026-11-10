@@ -10,9 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.smarthome.launcher.R
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
@@ -72,19 +74,19 @@ fun TabletClockWeatherHeader(
         ) {
             Icon(
                 imageVector = Icons.Default.WbSunny,
-                contentDescription = "Weather",
+                contentDescription = stringResource(R.string.weather_icon_desc),
                 tint = Color(0xFFFBBF24),
                 modifier = Modifier.size(32.dp)
             )
             Spacer(modifier = Modifier.width(10.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = "72°F",
+                    text = stringResource(R.string.weather_temp_mock),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "Clear Sky",
+                    text = stringResource(R.string.weather_condition_mock),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

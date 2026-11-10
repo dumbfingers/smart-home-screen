@@ -12,10 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.smarthome.launcher.R
 
 @Composable
 fun SettingsDialog(
@@ -54,12 +56,12 @@ fun SettingsDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Smart Home Screen Settings",
+                        text = stringResource(R.string.settings_title),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                        Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.settings_close))
                     }
                 }
 
@@ -72,7 +74,7 @@ fun SettingsDialog(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
-                        text = "Home Assistant",
+                        text = stringResource(R.string.settings_section_ha),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
@@ -81,7 +83,7 @@ fun SettingsDialog(
                     OutlinedTextField(
                         value = haUrl,
                         onValueChange = { haUrl = it },
-                        label = { Text("Home Assistant URL (e.g. http://192.168.1.100:8123)") },
+                        label = { Text(stringResource(R.string.settings_ha_url_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -89,7 +91,7 @@ fun SettingsDialog(
                     OutlinedTextField(
                         value = haToken,
                         onValueChange = { haToken = it },
-                        label = { Text("Long-Lived Access Token") },
+                        label = { Text(stringResource(R.string.settings_ha_token_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -97,7 +99,7 @@ fun SettingsDialog(
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
-                        text = "Frigate CCTV",
+                        text = stringResource(R.string.settings_section_frigate),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
@@ -106,7 +108,7 @@ fun SettingsDialog(
                     OutlinedTextField(
                         value = frigateUrl,
                         onValueChange = { frigateUrl = it },
-                        label = { Text("Frigate Server URL (e.g. http://192.168.1.100:5000)") },
+                        label = { Text(stringResource(R.string.settings_frigate_url_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -114,8 +116,8 @@ fun SettingsDialog(
                     OutlinedTextField(
                         value = frigateCameras,
                         onValueChange = { frigateCameras = it },
-                        label = { Text("Camera Names (comma separated)") },
-                        supportingText = { Text("Example: front_door, driveway, backyard") },
+                        label = { Text(stringResource(R.string.settings_frigate_cameras_label)) },
+                        supportingText = { Text(stringResource(R.string.settings_frigate_cameras_hint)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -123,7 +125,7 @@ fun SettingsDialog(
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                     Text(
-                        text = "Bing Screensaver & Idle Timer",
+                        text = stringResource(R.string.settings_section_screensaver),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
@@ -134,7 +136,7 @@ fun SettingsDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("Enable Idle Screensaver", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.settings_screensaver_toggle), style = MaterialTheme.typography.bodyLarge)
                         Switch(
                             checked = screensaverEnabled,
                             onCheckedChange = { screensaverEnabled = it }
@@ -144,7 +146,7 @@ fun SettingsDialog(
                     OutlinedTextField(
                         value = screensaverTimeout,
                         onValueChange = { screensaverTimeout = it },
-                        label = { Text("Idle timeout in minutes") },
+                        label = { Text(stringResource(R.string.settings_screensaver_timeout_label)) },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true
                     )
@@ -157,7 +159,7 @@ fun SettingsDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.settings_button_cancel))
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
@@ -174,7 +176,7 @@ fun SettingsDialog(
                     ) {
                         Icon(imageVector = Icons.Default.Save, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Save Configuration")
+                        Text(stringResource(R.string.settings_button_save))
                     }
                 }
             }

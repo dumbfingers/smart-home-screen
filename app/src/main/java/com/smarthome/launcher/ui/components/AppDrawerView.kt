@@ -19,11 +19,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.smarthome.launcher.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -86,12 +88,12 @@ fun AppDrawerModal(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Installed Applications",
+                        text = stringResource(R.string.apps_drawer_title),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                        Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.apps_close))
                     }
                 }
 
@@ -101,9 +103,9 @@ fun AppDrawerModal(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
                     leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+                        Icon(imageVector = Icons.Default.Search, contentDescription = null)
                     },
-                    placeholder = { Text("Search apps...") },
+                    placeholder = { Text(stringResource(R.string.apps_search_placeholder)) },
                     modifier = Modifier.fillMaxWidth(0.5f),
                     singleLine = true
                 )

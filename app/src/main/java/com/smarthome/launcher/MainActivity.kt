@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.smarthome.launcher.calendar.CalendarAgendaWidget
 import com.smarthome.launcher.calendar.CalendarViewModel
@@ -35,8 +36,10 @@ import com.smarthome.launcher.screensaver.ScreensaverViewModel
 import com.smarthome.launcher.settings.SettingsDialog
 import com.smarthome.launcher.ui.components.AppDrawerModal
 import com.smarthome.launcher.ui.components.TabletClockWeatherHeader
-import com.smarthome.launcher.ui.theme.DarkColorScheme
+import com.smarthome.launcher.ui.theme.SmartHomeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val calendarViewModel by viewModels<CalendarViewModel>()
@@ -48,7 +51,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MaterialTheme(colorScheme = DarkColorScheme) {
+            SmartHomeTheme {
                 HomeScreen(
                     calendarViewModel = calendarViewModel,
                     haViewModel = haViewModel,
@@ -122,7 +125,7 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Apps,
-                                contentDescription = "All Apps",
+                                contentDescription = stringResource(R.string.action_all_apps),
                                 tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
@@ -136,7 +139,7 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Nightlight,
-                                contentDescription = "Screensaver Preview",
+                                contentDescription = stringResource(R.string.action_screensaver_preview),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -149,7 +152,7 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings",
+                                contentDescription = stringResource(R.string.action_settings),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }

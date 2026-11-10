@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smarthome.launcher.settings.AppSettings
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class ScreensaverUiState(
     val isScreensaverActive: Boolean = false,
@@ -18,10 +20,12 @@ data class ScreensaverUiState(
     val timeoutMillis: Long = 2 * 60 * 1000L
 )
 
-class ScreensaverViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val client = BingImageClient()
-    private val settings = AppSettings(application)
+@HiltViewModel
+class ScreensaverViewModel @Inject constructor(
+    application: Application,
+    private val client: BingImageClient,
+    private val settings: AppSettings
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(
         ScreensaverUiState(timeoutMillis = settings.screensaverTimeoutMinutes * 60 * 1000L)

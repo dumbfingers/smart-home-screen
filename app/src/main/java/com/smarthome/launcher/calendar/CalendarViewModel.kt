@@ -5,11 +5,13 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
 data class CalendarUiState(
     val hasPermission: Boolean = false,
@@ -22,9 +24,12 @@ data class CalendarUiState(
     val isCreating: Boolean = false
 )
 
-class CalendarViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class CalendarViewModel @Inject constructor(
+    application: Application,
+    private val repository: CalendarRepository
+) : AndroidViewModel(application) {
 
-    private val repository = CalendarRepository(application)
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
 

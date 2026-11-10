@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smarthome.launcher.settings.AppSettings
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class FrigateUiState(
     val isConfigured: Boolean = false,
@@ -20,10 +22,12 @@ data class FrigateUiState(
     val selectedCameraForLiveView: FrigateCamera? = null
 )
 
-class FrigateViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val client = FrigateClient()
-    private val settings = AppSettings(application)
+@HiltViewModel
+class FrigateViewModel @Inject constructor(
+    application: Application,
+    private val client: FrigateClient,
+    private val settings: AppSettings
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(FrigateUiState())
     val uiState: StateFlow<FrigateUiState> = _uiState.asStateFlow()

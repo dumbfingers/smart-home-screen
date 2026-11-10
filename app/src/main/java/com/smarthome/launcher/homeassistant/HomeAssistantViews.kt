@@ -24,12 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.smarthome.launcher.R
 
 @Composable
 fun HomeAssistantWidget(
@@ -60,13 +62,13 @@ fun HomeAssistantWidget(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Bolt,
-                        contentDescription = "Home Assistant",
+                        contentDescription = stringResource(R.string.ha_title),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Home Controls",
+                        text = stringResource(R.string.ha_title),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -75,7 +77,7 @@ fun HomeAssistantWidget(
 
                 Row {
                     IconButton(onClick = onRefresh, modifier = Modifier.size(36.dp)) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh HA")
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.ha_refresh))
                     }
                     Spacer(modifier = Modifier.width(4.dp))
                     FilledTonalButton(
@@ -88,7 +90,7 @@ fun HomeAssistantWidget(
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Full Dashboard", fontSize = 12.sp)
+                        Text(stringResource(R.string.ha_full_dashboard), fontSize = 12.sp)
                     }
                 }
             }
@@ -107,12 +109,12 @@ fun HomeAssistantWidget(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Showing demo smart home items",
+                            text = stringResource(R.string.ha_demo_banner),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                         TextButton(onClick = onConfigureClick) {
-                            Text("Setup Server", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                            Text(stringResource(R.string.ha_setup_server_button), fontWeight = FontWeight.Bold, fontSize = 12.sp)
                         }
                     }
                 }
@@ -245,12 +247,12 @@ fun HaDashboardWebViewModal(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Home Assistant Lovelace Dashboard",
+                        text = stringResource(R.string.ha_lovelace_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
+                        Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.ha_dialog_close))
                     }
                 }
                 AndroidView(

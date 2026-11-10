@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +31,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.smarthome.launcher.R
 
 @Composable
 fun FrigateCctvWidget(
@@ -60,13 +62,13 @@ fun FrigateCctvWidget(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Videocam,
-                        contentDescription = "Frigate CCTV",
+                        contentDescription = stringResource(R.string.frigate_title),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Frigate CCTV",
+                        text = stringResource(R.string.frigate_title),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
@@ -74,7 +76,7 @@ fun FrigateCctvWidget(
                 }
 
                 IconButton(onClick = onRefresh, modifier = Modifier.size(36.dp)) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Refresh Cameras")
+                    Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.frigate_refresh))
                 }
             }
 
@@ -92,12 +94,12 @@ fun FrigateCctvWidget(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Showing demo CCTV feeds",
+                            text = stringResource(R.string.frigate_demo_banner),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                         TextButton(onClick = onConfigureClick) {
-                            Text("Setup Frigate", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                            Text(stringResource(R.string.frigate_setup_button), fontWeight = FontWeight.Bold, fontSize = 12.sp)
                         }
                     }
                 }
@@ -178,7 +180,7 @@ fun FrigateCameraPreviewCard(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "LIVE",
+                            text = stringResource(R.string.frigate_badge_live),
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White,
                             fontSize = 9.sp
@@ -213,13 +215,13 @@ fun FrigateLiveModal(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Camera: ${camera.displayName}",
+                        text = stringResource(R.string.frigate_camera_title_prefix, camera.displayName),
                         style = MaterialTheme.typography.titleLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(onClick = onDismiss) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                        Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.frigate_modal_close), tint = Color.White)
                     }
                 }
 

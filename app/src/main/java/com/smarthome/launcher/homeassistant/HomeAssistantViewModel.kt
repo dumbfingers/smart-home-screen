@@ -4,12 +4,14 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.smarthome.launcher.settings.AppSettings
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 data class HaUiState(
     val isConfigured: Boolean = false,
@@ -19,10 +21,12 @@ data class HaUiState(
     val showWebViewDashboard: Boolean = false
 )
 
-class HomeAssistantViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val client = HomeAssistantClient()
-    private val settings = AppSettings(application)
+@HiltViewModel
+class HomeAssistantViewModel @Inject constructor(
+    application: Application,
+    private val client: HomeAssistantClient,
+    private val settings: AppSettings
+) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(HaUiState())
     val uiState: StateFlow<HaUiState> = _uiState.asStateFlow()
