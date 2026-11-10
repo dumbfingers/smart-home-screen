@@ -2,10 +2,26 @@ package com.smarthome.launcher.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 
 class AppSettings(context: Context) {
-    private val prefs: SharedPreferences =
+    private val prefs: SharedPreferences = try {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+
+        EncryptedSharedPreferences.create(
+            context,
+            "smart_home_launcher_secure_prefs",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    } catch (e: Exception) {
+        // Fallback for mock/test environments without Android Keystore
         context.getSharedPreferences("smart_home_launcher_prefs", Context.MODE_PRIVATE)
+    }
 
     var haUrl: String
         get() = prefs.getString("ha_url", "") ?: ""

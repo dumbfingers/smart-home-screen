@@ -157,8 +157,11 @@ fun HaEntityCard(
         MaterialTheme.colorScheme.onSurfaceVariant
     }
 
+    val isClickable = entity.domain != EntityDomain.SENSOR
+
     Surface(
-        onClick = onToggle,
+        onClick = { if (isClickable) onToggle() },
+        enabled = isClickable,
         shape = RoundedCornerShape(16.dp),
         color = cardBackground,
         modifier = Modifier.fillMaxWidth()

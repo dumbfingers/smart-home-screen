@@ -24,6 +24,10 @@
     <string name="calendar_event_location_label">Location</string>
     <string name="calendar_event_description_label">Description</string>
     <string name="calendar_event_all_day_toggle">All-day event</string>
+    <string name="calendar_start_label">Start</string>
+    <string name="calendar_end_label">End</string>
+    <string name="calendar_pick_date">Date</string>
+    <string name="calendar_pick_time">Time</string>
     <string name="calendar_button_cancel">Cancel</string>
     <string name="calendar_button_save_sync">Save &amp; Sync</string>
     <string name="calendar_button_close">Close</string>

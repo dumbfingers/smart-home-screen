@@ -1,13 +1,19 @@
 package com.smarthome.launcher.calendar
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -19,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -258,6 +265,7 @@ fun EventDetailOrEditDialog(
     onStartEdit: (CalendarEventModel) -> Unit
 ) {
     if (event == null && !isEditingOrCreating) return
+    val context = LocalContext.current
 
     var title by remember(event) { mutableStateOf(event?.title ?: "") }
     var description by remember(event) { mutableStateOf(event?.description ?: "") }
@@ -267,11 +275,20 @@ fun EventDetailOrEditDialog(
     }
     var isAllDay by remember(event) { mutableStateOf(event?.allDay ?: false) }
 
-    val startMillis = remember(event) { event?.startMillis ?: System.currentTimeMillis() }
-    val endMillis = remember(event) { event?.endMillis ?: (System.currentTimeMillis() + 3600_000L) }
+    var startCalendar by remember(event) {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = event?.startMillis ?: (System.currentTimeMillis() + 3600_000L)
+        mutableStateOf(cal)
+    }
 
-    val timeFormat = remember { SimpleDateFormat("h:mm a", Locale.getDefault()) }
-    val dateFormat = remember { SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.getDefault()) }
+    var endCalendar by remember(event) {
+        val cal = Calendar.getInstance()
+        cal.timeInMillis = event?.endMillis ?: (System.currentTimeMillis() + 7200_000L)
+        mutableStateOf(cal)
+    }
+
+    val displayDateFormat = remember { SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()) }
+    val displayTimeFormat = remember { SimpleDateFormat("h:mm a", Locale.getDefault()) }
     val allDayLabel = stringResource(R.string.calendar_all_day)
 
     Dialog(onDismissRequest = onDismiss) {
@@ -286,6 +303,7 @@ fun EventDetailOrEditDialog(
                 modifier = Modifier
                     .padding(24.dp)
                     .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
             ) {
                 if (isEditingOrCreating) {
                     Text(
@@ -334,6 +352,148 @@ fun EventDetailOrEditDialog(
                         )
                     }
 
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // START DATE / TIME PICKERS
+                    Text(
+                        text = stringResource(R.string.calendar_start_label),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(
+                            onClick = {
+                                val current = startCalendar
+                                DatePickerDialog(
+                                    context,
+                                    { _, year, month, day ->
+                                        val newCal = Calendar.getInstance().apply {
+                                            timeInMillis = current.timeInMillis
+                                            set(Calendar.YEAR, year)
+                                            set(Calendar.MONTH, month)
+                                            set(Calendar.DAY_OF_MONTH, day)
+                                        }
+                                        startCalendar = newCal
+                                        if (endCalendar.timeInMillis < newCal.timeInMillis) {
+                                            val newEnd = Calendar.getInstance().apply {
+                                                timeInMillis = newCal.timeInMillis + 3600_000L
+                                            }
+                                            endCalendar = newEnd
+                                        }
+                                    },
+                                    current.get(Calendar.YEAR),
+                                    current.get(Calendar.MONTH),
+                                    current.get(Calendar.DAY_OF_MONTH)
+                                ).show()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(Icons.Default.CalendarMonth, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(displayDateFormat.format(startCalendar.time), maxLines = 1)
+                        }
+
+                        if (!isAllDay) {
+                            OutlinedButton(
+                                onClick = {
+                                    val current = startCalendar
+                                    TimePickerDialog(
+                                        context,
+                                        { _, hour, minute ->
+                                            val newCal = Calendar.getInstance().apply {
+                                                timeInMillis = current.timeInMillis
+                                                set(Calendar.HOUR_OF_DAY, hour)
+                                                set(Calendar.MINUTE, minute)
+                                            }
+                                            startCalendar = newCal
+                                            if (endCalendar.timeInMillis <= newCal.timeInMillis) {
+                                                val newEnd = Calendar.getInstance().apply {
+                                                    timeInMillis = newCal.timeInMillis + 3600_000L
+                                                }
+                                                endCalendar = newEnd
+                                            }
+                                        },
+                                        current.get(Calendar.HOUR_OF_DAY),
+                                        current.get(Calendar.MINUTE),
+                                        false
+                                    ).show()
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(Icons.Default.AccessTime, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(displayTimeFormat.format(startCalendar.time), maxLines = 1)
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // END DATE / TIME PICKERS
+                    Text(
+                        text = stringResource(R.string.calendar_end_label),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(
+                            onClick = {
+                                val current = endCalendar
+                                DatePickerDialog(
+                                    context,
+                                    { _, year, month, day ->
+                                        val newCal = Calendar.getInstance().apply {
+                                            timeInMillis = current.timeInMillis
+                                            set(Calendar.YEAR, year)
+                                            set(Calendar.MONTH, month)
+                                            set(Calendar.DAY_OF_MONTH, day)
+                                        }
+                                        endCalendar = newCal
+                                    },
+                                    current.get(Calendar.YEAR),
+                                    current.get(Calendar.MONTH),
+                                    current.get(Calendar.DAY_OF_MONTH)
+                                ).show()
+                            },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(Icons.Default.CalendarMonth, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(displayDateFormat.format(endCalendar.time), maxLines = 1)
+                        }
+
+                        if (!isAllDay) {
+                            OutlinedButton(
+                                onClick = {
+                                    val current = endCalendar
+                                    TimePickerDialog(
+                                        context,
+                                        { _, hour, minute ->
+                                            val newCal = Calendar.getInstance().apply {
+                                                timeInMillis = current.timeInMillis
+                                                set(Calendar.HOUR_OF_DAY, hour)
+                                                set(Calendar.MINUTE, minute)
+                                            }
+                                            endCalendar = newCal
+                                        },
+                                        current.get(Calendar.HOUR_OF_DAY),
+                                        current.get(Calendar.MINUTE),
+                                        false
+                                    ).show()
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Icon(Icons.Default.AccessTime, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(displayTimeFormat.format(endCalendar.time), maxLines = 1)
+                            }
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(
@@ -347,14 +507,20 @@ fun EventDetailOrEditDialog(
                         Button(
                             onClick = {
                                 if (title.isNotBlank()) {
+                                    val finalStart = startCalendar.timeInMillis
+                                    val finalEnd = if (endCalendar.timeInMillis > finalStart) {
+                                        endCalendar.timeInMillis
+                                    } else {
+                                        finalStart + 3600_000L
+                                    }
                                     onSave(
                                         event?.id,
                                         selectedCalId,
                                         title,
                                         description,
                                         location,
-                                        startMillis,
-                                        endMillis,
+                                        finalStart,
+                                        finalEnd,
                                         isAllDay
                                     )
                                 }
@@ -372,7 +538,7 @@ fun EventDetailOrEditDialog(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "${dateFormat.format(Date(event.startMillis))}  ${if (event.allDay) "($allDayLabel)" else "${timeFormat.format(Date(event.startMillis))} - ${timeFormat.format(Date(event.endMillis))}"}",
+                        text = "${displayDateFormat.format(Date(event.startMillis))}  ${if (event.allDay) "($allDayLabel)" else "${displayTimeFormat.format(Date(event.startMillis))} - ${displayTimeFormat.format(Date(event.endMillis))}"}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.primary
                     )

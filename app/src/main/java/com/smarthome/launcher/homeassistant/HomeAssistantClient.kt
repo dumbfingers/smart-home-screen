@@ -88,21 +88,25 @@ class HomeAssistantClient(
         token: String,
         domain: String,
         service: String,
-        entityId: String
+        entityId: String,
+        extraData: Map<String, Any> = emptyMap()
     ): Result<Boolean> = withContext(Dispatchers.IO) {
         val sanitizedUrl = baseUrl.trimEnd('/')
         if (sanitizedUrl.isBlank() || token.isBlank()) {
             return@withContext Result.failure(IllegalArgumentException("URL or token not configured"))
         }
 
-        val jsonBody = JSONObject().apply {
+        val jsonObject = JSONObject().apply {
             put("entity_id", entityId)
-        }.toString()
+            for ((key, value) in extraData) {
+                put(key, value)
+            }
+        }
 
         val request = Request.Builder()
             .url("$sanitizedUrl/api/services/$domain/$service")
             .addHeader("Authorization", "Bearer $token")
-            .post(jsonBody.toRequestBody("application/json".toMediaType()))
+            .post(jsonObject.toString().toRequestBody("application/json".toMediaType()))
             .build()
 
         try {

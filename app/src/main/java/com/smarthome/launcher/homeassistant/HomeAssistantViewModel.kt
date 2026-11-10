@@ -103,6 +103,16 @@ class HomeAssistantViewModel @Inject constructor(
     }
 
     fun toggleEntity(entity: HaEntity) {
+        if (entity.domain == EntityDomain.SENSOR) {
+            // Sensors are read-only metrics
+            return
+        }
+
+        if (entity.domain == EntityDomain.CLIMATE) {
+            toggleClimate(entity)
+            return
+        }
+
         val targetService = if (entity.isTurnedOn) "turn_off" else "turn_on"
         val domain = when (entity.domain) {
             EntityDomain.LIGHT -> "light"
@@ -142,6 +152,45 @@ class HomeAssistantViewModel @Inject constructor(
 
             if (res.isFailure) {
                 // Revert on failure
+                _uiState.value = _uiState.value.copy(entities = current)
+            }
+        }
+    }
+
+    private fun toggleClimate(entity: HaEntity) {
+        val isCurrentlyOff = entity.state.equals("off", ignoreCase = true)
+        val nextHvacMode = if (isCurrentlyOff) "cool" else "off"
+
+        if (!settings.isHaConfigured) {
+            val updated = _uiState.value.entities.map {
+                if (it.entityId == entity.entityId) {
+                    it.copy(state = nextHvacMode)
+                } else it
+            }
+            _uiState.value = _uiState.value.copy(entities = updated)
+            return
+        }
+
+        viewModelScope.launch {
+            val current = _uiState.value.entities
+            _uiState.value = _uiState.value.copy(
+                entities = current.map {
+                    if (it.entityId == entity.entityId) {
+                        it.copy(state = nextHvacMode)
+                    } else it
+                }
+            )
+
+            val res = client.callService(
+                baseUrl = settings.haUrl,
+                token = settings.haToken,
+                domain = "climate",
+                service = "set_hvac_mode",
+                entityId = entity.entityId,
+                extraData = mapOf("hvac_mode" to nextHvacMode)
+            )
+
+            if (res.isFailure) {
                 _uiState.value = _uiState.value.copy(entities = current)
             }
         }

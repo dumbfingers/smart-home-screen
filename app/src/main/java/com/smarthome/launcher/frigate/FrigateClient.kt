@@ -82,7 +82,7 @@ class FrigateClient(
                             FrigateCamera(
                                 name = key,
                                 displayName = key.replace("_", " ").capitalizeWords(),
-                                isOnline = camFps > 0.1 || true,
+                                isOnline = camFps > 0.05,
                                 fps = camFps,
                                 detectionFps = detFps
                             )
